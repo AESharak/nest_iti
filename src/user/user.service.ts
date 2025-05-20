@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { User } from './user.type';
 
 @Injectable()
 export class UserService {
-  private users: any[];
+  private users: User[];
 
   constructor() {
     this.users = [];
@@ -17,8 +18,8 @@ export class UserService {
     return 'user has been added successfully';
   }
 
-  getUserById(id: number, age: number): any {
-    const user: any = this.users[id - 1];
+  getUserById(id: number, age: number): User | string {
+    const user: User = this.users[id - 1];
     if (user.age === age) {
       return user;
     }

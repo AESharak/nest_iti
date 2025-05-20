@@ -8,6 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
+import { User } from './user.type';
 
 @Controller('user')
 export class UserController {
@@ -19,12 +20,15 @@ export class UserController {
   }
 
   @Post()
-  addUser(@Body() user: any): string {
+  addUser(@Body() user: User): string {
     return this.userService.addUser(user);
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: number, @Query('age') age: number): any {
+  getUserById(
+    @Param('id') id: number,
+    @Query('age') age: number,
+  ): User | string {
     return this.userService.getUserById(+id, +age);
   }
 
