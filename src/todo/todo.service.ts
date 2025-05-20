@@ -14,11 +14,12 @@ export class TodoService {
   }
 
   getTodoById(id: number) {
-    if (!this.todos.some((t) => t.id === id)) {
+    const todo = this.todos.find((t) => t.id === id);
+    if (!todo) {
       throw new HttpException('Todo not found', HttpStatus.NOT_FOUND);
     }
 
-    return this.todos.find((t) => t.id === id);
+    return todo;
   }
 
   addTodo(todo: Todo) {
@@ -27,20 +28,24 @@ export class TodoService {
   }
 
   deleteTodoById(id: number): string {
-    if (!this.todos.some((t) => t.id === id)) {
+    const beforeTodosDeletionLength = this.todos.length;
+    this.todos = this.todos.filter((t) => t.id !== id);
+    if (beforeTodosDeletionLength === this.todos.length) {
       throw new HttpException('Todo not found', HttpStatus.NOT_FOUND);
     }
-    this.todos = this.todos.filter((t) => t.id !== id);
     return 'Todo removed successfully';
   }
 
   editTodo(id: number, todo: Todo) {
-    if (!this.todos.some((t) => t.id === id)) {
+    const currentTodo: Todo | undefined = this.todos.find((t) => t.id === id);
+
+    if (!currentTodo) {
       throw new HttpException('Todo not found', HttpStatus.NOT_FOUND);
     }
-    const currentTodoIdx = this.todos.findIndex((t) => t.id === id);
+    currentTodo.id = id;
+    currentTodo.status = todo.status;
+    currentTodo.task = todo.task;
 
-    this.todos[currentTodoIdx] = { ...todo, id };
     return 'todo Modified successfully';
   }
 }
