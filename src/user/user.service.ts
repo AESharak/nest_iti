@@ -18,7 +18,7 @@ export class UserService {
     return this.users;
   }
 
-  addUser(user: any): string {
+  addUser(user: User): string {
     this.users.push(user);
     return 'user has been added successfully';
   }

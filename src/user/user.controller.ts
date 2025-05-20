@@ -10,12 +10,12 @@ import {
 import { UserService } from './user.service';
 import { User } from './user.type';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
-  getAll(): any[] {
+  getAll(): User[] {
     return this.userService.getUsers();
   }
 
