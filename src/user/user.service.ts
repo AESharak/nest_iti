@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { User } from './user.type';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UserService {
@@ -18,8 +19,8 @@ export class UserService {
     return this.users;
   }
 
-  addUser(user: User): string {
-    this.users.push(user);
+  addUser(user: CreateUserDto): string {
+    this.users.push({ ...user, city: 'cairo' });
     return 'user has been added successfully';
   }
 
