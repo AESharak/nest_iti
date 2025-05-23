@@ -1,15 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 import { status } from './todo.type';
 
-@Schema()
+export type TodoDocument = Todo & Document;
+
+@Schema({ timestamps: true })
 export class Todo {
-  @Prop({ required: true })
+  @Prop({ required: true, trim: true, minlength: 10 })
   task: string;
 
-  @Prop({ required: true })
-  id: number;
-
-  @Prop({ required: true, enum: status })
+  @Prop({ required: true, enum: status, default: status.TODO })
   status: status;
 }
 

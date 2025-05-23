@@ -4,15 +4,50 @@ import { Model } from 'mongoose';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { Todo } from './todo.schema';
 import { UpdateTodoDto } from './dto/update-todo.dto';
+import { TodoQueryDto } from './dto/todo-query.dto';
 
 @Injectable()
 export class TodoService {
   constructor(@InjectModel(Todo.name) private todoModel: Model<Todo>) {}
 
-  async getTodos() {
-    const todos = await this.todoModel.find();
+  async getTodos(query: TodoQueryDto) {
+    const { skip = 0, limit = 10, search, status } = query;
 
-    return todos;
+    const filter: Record<string, any> = {};
+
+    if (status) {
+      filter.status = status;
+    }
+
+    if (search) {
+      filter.task = { $regex: search, $options: 'i' };
+    }
+
+    try {
+      const [todos, total] = await Promise.all([
+        this.todoModel
+          .find(filter)
+          .skip(skip)
+          .limit(limit)
+          .sort({ createdAt: -1 })
+          .exec(),
+        this.todoModel.countDocuments(filter).exec(),
+      ]);
+
+      return {
+        data: todos,
+        total,
+        skip,
+        limit,
+        hasMore: skip + limit < total,
+      };
+    } catch (error) {
+      console.error('Error fetching todos:', error);
+      throw new HttpException(
+        'Failed to fetch todos',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async getTodoById(id: string) {

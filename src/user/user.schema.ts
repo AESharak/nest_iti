@@ -1,14 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-@Schema()
+export type UserDocument = User & Document;
+
+@Schema({ timestamps: true })
 export class User {
-  @Prop()
+  @Prop({ required: true, trim: true, maxlength: 20 })
   name: string;
 
-  @Prop()
+  @Prop({ required: true, min: 0, max: 150 })
   age: number;
 
-  @Prop()
+  @Prop({ default: 'cairo', trim: true, maxlength: 50 })
   city: string;
 }
 
